@@ -31,4 +31,4 @@ function Timestamp<T extends Constructor>(base : T) {
 
 const ActivePerson = RecordStatus(Timestamp(Person));
 let activePerson = new ActivePerson("Peter", "O'Hanlon");
-activePerson.Deleted = true;
+
