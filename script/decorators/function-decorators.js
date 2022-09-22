@@ -59,24 +59,6 @@ function Role(role) {
         };
     };
 }
-function RoleTwo(role) {
-    return function (constructor) {
-        if (!IsInRole(role)) {
-            throw new Error('The user is not authorized to access this class');
-        }
-    };
-}
-let RestrictedClass = class RestrictedClass {
-    constructor() {
-        console.log(`Inside the constructor`);
-    }
-    Validate() {
-        console.log(`Validating`);
-    }
-};
-RestrictedClass = __decorate([
-    RoleTwo("admin")
-], RestrictedClass);
 class NoRoleCheck {
     AnyoneCanRun(args) {
         if (!IsInRole("user")) {
@@ -118,5 +100,4 @@ function IsInRole(role) {
 }
 TestDecoratorExample(new NoRoleCheck());
 console.log(new TestClass().printId('Florian'));
-console.log(new RestrictedClass().Validate());
 //# sourceMappingURL=function-decorators.js.map
