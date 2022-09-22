@@ -1,33 +1,30 @@
 "use strict";
-var NoRoleCheck = /** @class */ (function () {
-    function NoRoleCheck() {
-    }
-    NoRoleCheck.prototype.AnyoneCanRun = function (args) {
+class NoRoleCheck {
+    AnyoneCanRun(args) {
         if (!IsInRole("user")) {
-            console.log("".concat(currentUser.user, " is not in the user role"));
+            console.log(`${currentUser.user} is not in the user role`);
             return;
         }
         ;
         console.log(args);
-    };
-    NoRoleCheck.prototype.AdminOnly = function (args) {
+    }
+    AdminOnly(args) {
         if (!IsInRole("admin")) {
-            console.log("".concat(currentUser.user, " is not in the admin role"));
+            console.log(`${currentUser.user} is not in the admin role`);
         }
         ;
         console.log(args);
-    };
-    return NoRoleCheck;
-}());
-var currentUser = { user: "peter", roles: [{ role: "user" }, { role: "admin" }]
+    }
+}
+let currentUser = { user: "peter", roles: [{ role: "user" }, { role: "admin" }]
 };
 function TestDecoratorExample(decoratorMethod) {
-    console.log("Current user ".concat(currentUser.user));
-    decoratorMethod.AnyoneCanRun("Running as user");
-    decoratorMethod.AdminOnly("Running as admin");
+    console.log(`Current user ${currentUser.user}`);
+    decoratorMethod.AnyoneCanRun(`Running as user`);
+    decoratorMethod.AdminOnly(`Running as admin`);
 }
 function IsInRole(role) {
-    return currentUser.roles.some(function (x) { return x.role === role; });
+    return currentUser.roles.some(x => x.role === role);
 }
 TestDecoratorExample(new NoRoleCheck());
 //# sourceMappingURL=function-decorators.js.map
