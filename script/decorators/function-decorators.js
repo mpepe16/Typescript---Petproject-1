@@ -7,6 +7,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestClass = void 0;
+let currentUser = { user: "peter", roles: [{ role: "user" }, { role: "admin" }]
+};
 function TestMethod(target, propertyKey, PropertyDescriptor) {
     console.log(target);
     console.log(propertyKey);
@@ -14,16 +16,20 @@ function TestMethod(target, propertyKey, PropertyDescriptor) {
         return `Hello ${args}`;
     };
 }
-function Component(target) {
-    target.prototype.id = 100;
+//Now in the parameter we can expect an object
+function Component(options) {
+    return (target) => {
+        target.elementId = options.id;
+    };
 }
+//Now we can pass the object with the id propety to the component decorator
 let TestClass = class TestClass {
     printId(prefix = '') {
         return prefix + this.id;
     }
 };
 TestClass = __decorate([
-    Component
+    Component({ id: "Hello wordl", })
 ], TestClass);
 exports.TestClass = TestClass;
 // This can be applied with @Admin
@@ -56,8 +62,6 @@ class NoRoleCheck {
         console.log(args);
     }
 }
-let currentUser = { user: "peter", roles: [{ role: "user" }, { role: "admin" }]
-};
 function TestDecoratorExample(decoratorMethod) {
     console.log(`Current user ${currentUser.user}`);
     decoratorMethod.AnyoneCanRun(`Running as user`);
