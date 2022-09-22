@@ -28,6 +28,9 @@ let TestClass = class TestClass {
         return prefix + this.id;
     }
 };
+__decorate([
+    TestMethod
+], TestClass.prototype, "printId", null);
 TestClass = __decorate([
     Component({ id: "Hello wordl", })
 ], TestClass);
@@ -45,6 +48,35 @@ function Admin(target, propertyKey, descriptor) {
     };
     return descriptor;
 }
+function Role(role) {
+    return function (target, propertyKey, descriptor) {
+        let originalMethod = descriptor.value;
+        descriptor.value = function () {
+            if (IsInRole(role)) {
+                originalMethod.apply(this, arguments);
+            }
+            return console.log(`${currentUser.user} is not in the  ${role} role`);
+        };
+    };
+}
+function RoleTwo(role) {
+    return function (constructor) {
+        if (!IsInRole(role)) {
+            throw new Error('The user is not authorized to access this class');
+        }
+    };
+}
+let RestrictedClass = class RestrictedClass {
+    constructor() {
+        console.log(`Inside the constructor`);
+    }
+    Validate() {
+        console.log(`Validating`);
+    }
+};
+RestrictedClass = __decorate([
+    RoleTwo("admin")
+], RestrictedClass);
 class NoRoleCheck {
     AnyoneCanRun(args) {
         if (!IsInRole("user")) {
@@ -62,6 +94,20 @@ class NoRoleCheck {
         console.log(args);
     }
 }
+class DecoratedExampleMethodDecoration {
+    AnyoneCanRun(args) {
+        console.log(args);
+    }
+    AdminOnly(args) {
+        console.log(args);
+    }
+}
+__decorate([
+    Role('user')
+], DecoratedExampleMethodDecoration.prototype, "AnyoneCanRun", null);
+__decorate([
+    Role('admin')
+], DecoratedExampleMethodDecoration.prototype, "AdminOnly", null);
 function TestDecoratorExample(decoratorMethod) {
     console.log(`Current user ${currentUser.user}`);
     decoratorMethod.AnyoneCanRun(`Running as user`);
@@ -71,5 +117,6 @@ function IsInRole(role) {
     return currentUser.roles.some(x => x.role === role);
 }
 TestDecoratorExample(new NoRoleCheck());
-console.log(new TestClass().id + 1);
+console.log(new TestClass().printId('Florian'));
+console.log(new RestrictedClass().Validate());
 //# sourceMappingURL=function-decorators.js.map

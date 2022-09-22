@@ -21,7 +21,7 @@ function Component(options: {id: string}){
 export class TestClass{
     static elementId: string;
     id!: number;
-    
+    @TestMethod
     printId(prefix: string =''): string {
         return prefix + this.id;
     }
@@ -39,10 +39,26 @@ function Admin(target: any, propertyKey : string | symbol, descriptor : Property
     }
     return descriptor;
 }
+
+function Role(role:string){
+    return function(target : any, propertyKey : string | symbol, descriptor : PropertyDescriptor){
+        let originalMethod = descriptor.value;
+        descriptor.value = function(){
+            if(IsInRole(role))
+            {
+                originalMethod.apply(this, arguments);
+            }
+            return console.log(`${currentUser.user} is not in the  ${role} role`);
+        }
+    }
+}
+
 interface IDecoratorExample {
     AnyoneCanRun(args:string) : void;
     AdminOnly(args:string) : void;
    }
+
+
    class NoRoleCheck implements IDecoratorExample {
     AnyoneCanRun(args: string): void {
         if (!IsInRole("user")) {
@@ -59,7 +75,16 @@ interface IDecoratorExample {
        }
    }
 
-
+   class DecoratedExampleMethodDecoration implements IDecoratorExample
+{
+    @Role('user')
+    AnyoneCanRun(args: string): void {
+        console.log(args);
+    }
+    @Role('admin')
+    AdminOnly(args: string): void {
+        console.log(args);}
+}
 
 function TestDecoratorExample(decoratorMethod : IDecoratorExample) {
  console.log(`Current user ${currentUser.user}`);
@@ -71,5 +96,6 @@ function IsInRole(role:string):boolean {
     return currentUser.roles.some(x => x.role === role);
 }
 TestDecoratorExample(new NoRoleCheck());
-console.log(new TestClass().id + 1);
+console.log(new TestClass().printId('Florian'));
+
    
