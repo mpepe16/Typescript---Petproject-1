@@ -1,4 +1,44 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TestClass = void 0;
+function TestMethod(target, propertyKey, PropertyDescriptor) {
+    console.log(target);
+    console.log(propertyKey);
+    PropertyDescriptor.value = function (...args) {
+        return `Hello ${args}`;
+    };
+}
+function Component(target) {
+    target.prototype.id = 100;
+}
+let TestClass = class TestClass {
+    printId(prefix = '') {
+        return prefix + this.id;
+    }
+};
+TestClass = __decorate([
+    Component
+], TestClass);
+exports.TestClass = TestClass;
+// This can be applied with @Admin
+function Admin(target, propertyKey, descriptor) {
+    let originalMethod = descriptor.value;
+    descriptor.value = function () {
+        if (IsInRole("admin")) {
+            originalMethod.apply(this, arguments);
+        }
+        else {
+            console.log(`${currentUser.user} is not in the admin role`);
+        }
+    };
+    return descriptor;
+}
 class NoRoleCheck {
     AnyoneCanRun(args) {
         if (!IsInRole("user")) {
@@ -27,4 +67,5 @@ function IsInRole(role) {
     return currentUser.roles.some(x => x.role === role);
 }
 TestDecoratorExample(new NoRoleCheck());
+console.log(new TestClass().id + 1);
 //# sourceMappingURL=function-decorators.js.map
